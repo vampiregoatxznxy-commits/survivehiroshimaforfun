@@ -1,177 +1,135 @@
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 let W, H;
+let ruinsY = [];
+let time = 0;
+let audioCtx = null;
 
 function resize() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    initRuins();
-}
-window.addEventListener('resize', resize);
-resize();
-
-// ── ruined skyline silhouette ──
-let ruinsY = [];
-function initRuins() {
     ruinsY = [];
     const count = Math.max(60, Math.floor(W / 7));
     for (let i = 0; i <= count; i++) {
         const x = (i / count) * W;
-        const n1 = Math.sin(i * 0.3) * 25;
-        const n2 = Math.sin(i * 0.12) * 18;
-        const n3 = Math.sin(i * 0.05) * 30;
-        const h = n1 + n2 + n3;
-        ruinsY.push({ x, y: H - h - 20 - Math.random() * 10 });
+        const h = Math.sin(i * 0.3) * 25 + Math.sin(i * 0.12) * 18 + Math.sin(i * 0.05) * 30;
+        ruinsY.push({ x: x, y: H - h - 20 - Math.random() * 10 });
     }
 }
+window.addEventListener('resize', resize);
+resize();
 
-// ── smoke clouds (slow-moving background) ──
-class Cloud {
-    constructor() {
-        this.x = Math.random() * W * 1.5 - W * 0.25;
-        this.y = Math.random() * H * 0.4 + H * 0.05;
-        this.r = Math.random() * 180 + 80;
-        this.speed = Math.random() * 0.15 + 0.05;
-        this.op = Math.random() * 0.06 + 0.02;
-    }
-    update() {
-        this.x += this.speed;
-        if (this.x > W + this.r + 100) {
-            this.x = -this.r - 100;
-            this.y = Math.random() * H * 0.4 + H * 0.05;
-        }
-    }
-    draw() {
-        const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
-        g.addColorStop(0, `rgba(55,42,35,${this.op})`);
-        g.addColorStop(0.4, `rgba(40,32,27,${this.op*0.6})`);
-        g.addColorStop(1, `rgba(30,24,20,0)`);
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.fill();
-    }
+const clouds = [];
+for (let i = 0; i < 6; i++) {
+    clouds.push({
+        x: Math.random() * W * 1.5 - W * 0.25,
+        y: Math.random() * H * 0.4 + H * 0.05,
+        r: Math.random() * 220 + 120,
+        speed: Math.random() * 0.12 + 0.04,
+        op: Math.random() * 0.18 + 0.10
+    });
 }
 
-// ── falling ash particles ──
-class Ash {
-    constructor() { this.reset(); }
-    reset() {
-        this.x = Math.random() * W;
-        this.y = Math.random() * H - H;
-        this.s = Math.random() * 2.5 + 0.5;
-        this.sy = Math.random() * 0.2 + 0.03;
-        this.sx = (Math.random() - 0.5) * 0.12;
-        this.op = Math.random() * 0.25 + 0.08;
-        this.d = Math.random() * 10;
-    }
-    update() {
-        this.y += this.sy;
-        this.x += this.sx + Math.sin(this.y * 0.005 + this.d) * 0.2;
-        if (this.y > H + 5) this.reset();
-        if (this.x < -10) this.x = W + 10;
-        if (this.x > W + 10) this.x = -10;
-    }
-    draw() {
-        ctx.fillStyle = `rgba(80,68,58,${this.op})`;
-        ctx.fillRect(this.x, this.y, this.s, this.s * 0.6);
-    }
+const ashes = [];
+for (let i = 0; i < 180; i++) {
+    ashes.push({
+        x: Math.random() * W, y: -Math.random() * H,
+        s: Math.random() * 3 + 1.5,
+        sy: Math.random() * 0.3 + 0.05,
+        sx: (Math.random() - 0.5) * 0.15,
+        op: Math.random() * 0.4 + 0.2,
+        d: Math.random() * 10
+    });
 }
 
-// ── embers floating upward ──
-class Ember {
-    constructor() { this.reset(); }
-    reset() {
-        this.x = Math.random() * W;
-        this.y = H + 5;
-        this.s = Math.random() * 2 + 1;
-        this.sy = Math.random() * 0.25 + 0.08;
-        this.life = Math.random() * 500 + 200;
-        this.ml = this.life;
-    }
-    update() {
-        this.y -= this.sy;
-        this.x += (Math.random() - 0.5) * 0.25;
-        this.life--;
-        if (this.life <= 0 || this.y < -10) this.reset();
-    }
-    get op() {
-        const r = this.life / this.ml;
-        if (r < 0.3) return (r / 0.3) * 0.5;
-        if (r > 0.7) return ((1 - r) / 0.3) * 0.5;
-        return 0.5;
-    }
-    draw() {
-        ctx.save();
-        ctx.shadowColor = '#ff7733';
-        ctx.shadowBlur = 10;
-        ctx.fillStyle = `rgba(255,110,40,${this.op})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.s, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-    }
+const embers = [];
+for (let i = 0; i < 12; i++) {
+    embers.push({
+        x: Math.random() * W, y: H + 5,
+        s: Math.random() * 3 + 1.5,
+        sy: Math.random() * 0.35 + 0.1,
+        life: Math.random() * 500 + 200,
+        ml: 0
+    });
+    embers[i].ml = embers[i].life;
 }
 
-// ── init particles ──
-const clouds = Array.from({length: 6}, () => new Cloud());
-const ashes = Array.from({length: 180}, () => new Ash());
-const embers = Array.from({length: 10}, () => new Ember());
-let time = 0;
-
-// ── draw functions ──
-function drawBg() {
+function draw() {
     time += 0.002;
-    const p = Math.sin(time) * 0.02 + 0.98;
+    const p = Math.sin(time) * 0.03 + 0.97;
 
-    const g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, `rgb(${20*p|0},${16*p|0},${14*p|0})`);
-    g.addColorStop(0.4, `rgb(12,10,8)`);
-    g.addColorStop(1, `rgb(6,4,3)`);
+    ctx.fillStyle = `rgb(${60*p|0},${45*p|0},${38*p|0})`;
+    ctx.fillRect(0, 0, W, H);
+
+    const g = ctx.createRadialGradient(W*0.5, H*0.4, 0, W*0.5, H*0.4, W*0.5);
+    g.addColorStop(0, `rgba(160,70,30,${0.15*p})`);
+    g.addColorStop(0.3, `rgba(120,50,22,${0.08*p})`);
+    g.addColorStop(0.6, `rgba(70,30,15,${0.04*p})`);
+    g.addColorStop(1, `rgba(30,15,8,0)`);
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
 
-    const gg = ctx.createRadialGradient(W*0.5, H*0.5, 0, W*0.5, H*0.5, W*0.4);
-    gg.addColorStop(0, `rgba(80,35,15,${0.04*p})`);
-    gg.addColorStop(0.5, `rgba(50,22,10,${0.02})`);
-    gg.addColorStop(1, `rgba(20,10,5,0)`);
-    ctx.fillStyle = gg;
-    ctx.fillRect(0, 0, W, H);
-}
-
-function drawRuins() {
-    ctx.fillStyle = 'rgba(8,6,5,0.65)';
-    ctx.beginPath();
-    ctx.moveTo(0, H);
-    for (const p of ruinsY) ctx.lineTo(p.x, p.y);
-    ctx.lineTo(W, H);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = 'rgba(5,4,3,0.4)';
-    ctx.beginPath();
-    ctx.moveTo(0, H);
-    for (let i = 0; i < ruinsY.length; i += 2) {
-        ctx.lineTo(ruinsY[i].x, ruinsY[i].y + 15);
+    for (const c of clouds) {
+        c.x += c.speed;
+        if (c.x > W + c.r + 100) {
+            c.x = -c.r - 100;
+            c.y = Math.random() * H * 0.4 + H * 0.05;
+        }
+        const cg = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.r);
+        cg.addColorStop(0, `rgba(90,68,55,${c.op})`);
+        cg.addColorStop(0.5, `rgba(65,48,40,${c.op*0.5})`);
+        cg.addColorStop(1, `rgba(40,30,25,0)`);
+        ctx.fillStyle = cg;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+        ctx.fill();
     }
+
+    ctx.fillStyle = 'rgba(3,2,2,0.9)';
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    for (const r of ruinsY) ctx.lineTo(r.x, r.y);
     ctx.lineTo(W, H);
     ctx.closePath();
     ctx.fill();
+
+    for (const a of ashes) {
+        a.y += a.sy;
+        a.x += a.sx + Math.sin(a.y * 0.005 + a.d) * 0.25;
+        if (a.y > H + 5) { a.x = Math.random() * W; a.y = -Math.random() * H; }
+        if (a.x < -10) a.x = W + 10;
+        if (a.x > W + 10) a.x = -10;
+        ctx.fillStyle = `rgba(180,160,140,${a.op})`;
+        ctx.fillRect(a.x, a.y, a.s, a.s * 0.6);
+    }
+
+    for (const e of embers) {
+        e.y -= e.sy;
+        e.x += (Math.random() - 0.5) * 0.3;
+        e.life--;
+        if (e.life <= 0 || e.y < -10) {
+            e.x = Math.random() * W; e.y = H + 5;
+            e.life = Math.random() * 500 + 200; e.ml = e.life;
+        }
+        const r = e.life / e.ml;
+        let op = 0.7;
+        if (r < 0.3) op = (r / 0.3) * 0.7;
+        if (r > 0.7) op = ((1 - r) / 0.3) * 0.7;
+        ctx.save();
+        ctx.shadowColor = '#ff8844';
+        ctx.shadowBlur = 15;
+        ctx.fillStyle = `rgba(255,130,50,${op})`;
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, e.s, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+
+    requestAnimationFrame(draw);
 }
+draw();
 
-function animate() {
-    drawBg();
-    for (const c of clouds) { c.update(); c.draw(); }
-    drawRuins();
-    for (const a of ashes) { a.update(); a.draw(); }
-    for (const e of embers) { e.update(); e.draw(); }
-    requestAnimationFrame(animate);
-}
-animate();
-
-// ── audio: depressing ambient drone ──
-let audioCtx = null;
-
+// audio
 function initAudio() {
     if (audioCtx) return;
     try {
@@ -219,7 +177,6 @@ function initAudio() {
     } catch (_) {}
 }
 
-// ── navigation ──
 function showBlack() {
     if (!audioCtx) initAudio();
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
