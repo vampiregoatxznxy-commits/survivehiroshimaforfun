@@ -1,0 +1,110 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    background: #000;
+    font-family: Georgia, 'Times New Roman', serif;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+#bgCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#homeScreen {
+    background: transparent;
+}
+
+#homeScreen h1 {
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    color: #c8c0b8;
+    text-align: center;
+    letter-spacing: 0.12em;
+    font-weight: 300;
+    line-height: 1.3;
+    margin-bottom: 3rem;
+    text-shadow:
+        0 2px 30px rgba(0,0,0,0.9),
+        0 0 80px rgba(0,0,0,0.5);
+    animation: fadeIn 2s ease forwards;
+}
+
+.buttons {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeIn 2.5s ease forwards;
+}
+
+.btn {
+    padding: 0.8rem 2.5rem;
+    font-size: 1rem;
+    background: rgba(15, 12, 10, 0.6);
+    color: #a09888;
+    border: 1px solid rgba(140, 120, 100, 0.25);
+    cursor: pointer;
+    font-family: Georgia, 'Times New Roman', serif;
+    letter-spacing: 0.15em;
+    text-transform: lowercase;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.btn:hover {
+    background: rgba(50, 35, 25, 0.6);
+    border-color: rgba(180, 155, 130, 0.5);
+    color: #d8d0c8;
+    transform: scale(1.02);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+#blackScreen {
+    background: #000;
+    cursor: pointer;
+}
+
+.back-hint {
+    color: rgba(200, 190, 180, 0.25);
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    position: absolute;
+    bottom: 2rem;
+    font-family: Georgia, 'Times New Roman', serif;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
