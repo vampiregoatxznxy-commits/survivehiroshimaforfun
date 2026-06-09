@@ -7,7 +7,12 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<canvas id="bgCanvas"></canvas>
+
+<div id="bgContainer">
+    <video id="bgVideo" muted loop playsinline preload="auto"></video>
+    <canvas id="bgCanvas"></canvas>
+    <div id="overlay"></div>
+</div>
 
 <div id="homeScreen" class="screen">
     <h1>Survive Hiroshima Bombing Simulator</h1>

@@ -6,19 +6,50 @@
 
 body {
     overflow: hidden;
-    background: #2a1e18;
+    background: #000;
     font-family: Georgia, 'Times New Roman', serif;
     user-select: none;
     -webkit-user-select: none;
 }
 
-#bgCanvas {
+#bgContainer {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 0;
+}
+
+#bgVideo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    opacity: 0.85;
+}
+
+#bgCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background: rgba(0,0,0,0.45);
 }
 
 .screen {
@@ -31,7 +62,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 3;
 }
 
 .hidden {

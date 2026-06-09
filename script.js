@@ -1,37 +1,27 @@
+const video = document.getElementById('bgVideo');
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 let W, H;
-let ruinsY = [];
-let time = 0;
 let audioCtx = null;
 
+// ── video background ──
+video.src = 'https://archive.org/download/TaleofTw1946/TaleofTw1946_512kb.mp4';
+video.playbackRate = 0.35;
+
+video.addEventListener('canplay', () => {
+    video.play().catch(() => {});
+});
+
+// ── canvas particles overlay ──
 function resize() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    ruinsY = [];
-    const count = Math.max(60, Math.floor(W / 7));
-    for (let i = 0; i <= count; i++) {
-        const x = (i / count) * W;
-        const h = Math.sin(i * 0.3) * 25 + Math.sin(i * 0.12) * 18 + Math.sin(i * 0.05) * 30;
-        ruinsY.push({ x: x, y: H - h - 20 - Math.random() * 10 });
-    }
 }
 window.addEventListener('resize', resize);
 resize();
 
-const clouds = [];
-for (let i = 0; i < 6; i++) {
-    clouds.push({
-        x: Math.random() * W * 1.5 - W * 0.25,
-        y: Math.random() * H * 0.4 + H * 0.05,
-        r: Math.random() * 220 + 120,
-        speed: Math.random() * 0.12 + 0.04,
-        op: Math.random() * 0.18 + 0.10
-    });
-}
-
 const ashes = [];
-for (let i = 0; i < 180; i++) {
+for (let i = 0; i < 150; i++) {
     ashes.push({
         x: Math.random() * W, y: -Math.random() * H,
         s: Math.random() * 3 + 1.5,
@@ -43,7 +33,7 @@ for (let i = 0; i < 180; i++) {
 }
 
 const embers = [];
-for (let i = 0; i < 12; i++) {
+for (let i = 0; i < 10; i++) {
     embers.push({
         x: Math.random() * W, y: H + 5,
         s: Math.random() * 3 + 1.5,
@@ -55,43 +45,7 @@ for (let i = 0; i < 12; i++) {
 }
 
 function draw() {
-    time += 0.002;
-    const p = Math.sin(time) * 0.03 + 0.97;
-
-    ctx.fillStyle = `rgb(${60*p|0},${45*p|0},${38*p|0})`;
-    ctx.fillRect(0, 0, W, H);
-
-    const g = ctx.createRadialGradient(W*0.5, H*0.4, 0, W*0.5, H*0.4, W*0.5);
-    g.addColorStop(0, `rgba(160,70,30,${0.15*p})`);
-    g.addColorStop(0.3, `rgba(120,50,22,${0.08*p})`);
-    g.addColorStop(0.6, `rgba(70,30,15,${0.04*p})`);
-    g.addColorStop(1, `rgba(30,15,8,0)`);
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, W, H);
-
-    for (const c of clouds) {
-        c.x += c.speed;
-        if (c.x > W + c.r + 100) {
-            c.x = -c.r - 100;
-            c.y = Math.random() * H * 0.4 + H * 0.05;
-        }
-        const cg = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.r);
-        cg.addColorStop(0, `rgba(90,68,55,${c.op})`);
-        cg.addColorStop(0.5, `rgba(65,48,40,${c.op*0.5})`);
-        cg.addColorStop(1, `rgba(40,30,25,0)`);
-        ctx.fillStyle = cg;
-        ctx.beginPath();
-        ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
-        ctx.fill();
-    }
-
-    ctx.fillStyle = 'rgba(3,2,2,0.9)';
-    ctx.beginPath();
-    ctx.moveTo(0, H);
-    for (const r of ruinsY) ctx.lineTo(r.x, r.y);
-    ctx.lineTo(W, H);
-    ctx.closePath();
-    ctx.fill();
+    ctx.clearRect(0, 0, W, H);
 
     for (const a of ashes) {
         a.y += a.sy;
