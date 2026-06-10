@@ -131,6 +131,152 @@ function initAudio() {
     } catch (_) {}
 }
 
+// ── character customization ──
+const characters = [
+    { id: 'hiroshi', name: 'Hiroshi', desc: 'civilian' },
+    { id: 'kenji', name: 'Kenji', desc: 'soldier' },
+    { id: 'yuki', name: 'Yuki', desc: 'child' },
+    { id: 'tanaka', name: 'Dr. Tanaka', desc: 'doctor' },
+];
+
+let selectedCharacter = 'hiroshi';
+
+function drawPortrait(canvas, charId) {
+    const c = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    c.clearRect(0, 0, w, h);
+
+    const cx = w / 2;
+    const skin = '#b8a090';
+    const dark = '#3a2e24';
+    const mid = '#5a4838';
+
+    function head(y) {
+        c.fillStyle = skin;
+        c.beginPath();
+        c.arc(cx, y, w * 0.16, 0, Math.PI * 2);
+        c.fill();
+    }
+
+    function body(y, bw, bh, color) {
+        c.fillStyle = color;
+        c.fillRect(cx - bw / 2, y, bw, bh);
+    }
+
+    function legs(y, color) {
+        c.fillStyle = color;
+        c.fillRect(cx - w * 0.12, y, w * 0.1, h - y);
+        c.fillRect(cx + w * 0.02, y, w * 0.1, h - y);
+    }
+
+    function arms(y, len, color) {
+        c.fillStyle = color;
+        c.fillRect(0, y, w * 0.22, len);
+        c.fillRect(w - w * 0.22, y, w * 0.22, len);
+    }
+
+    switch (charId) {
+        case 'hiroshi': {
+            head(14);
+            c.fillStyle = dark;
+            c.beginPath();
+            c.arc(cx, 14, w * 0.16, Math.PI, 0);
+            c.fill();
+            body(24, w * 0.36, h * 0.3, '#5a4a3a');
+            legs(51, '#3a3028');
+            arms(24, h * 0.28, '#4a3a2e');
+            break;
+        }
+        case 'kenji': {
+            head(14);
+            c.fillStyle = '#4a5a3a';
+            c.beginPath();
+            c.arc(cx, 14, w * 0.17, Math.PI, 0);
+            c.fill();
+            c.fillStyle = '#4a5a3a';
+            c.fillRect(cx - w * 0.08, 12, w * 0.16, 5);
+            body(24, w * 0.42, h * 0.28, '#5a6a4a');
+            arms(24, h * 0.26, '#5a6a4a');
+            legs(50, '#3a3a2a');
+            break;
+        }
+        case 'yuki': {
+            head(13);
+            c.fillStyle = dark;
+            c.beginPath();
+            c.arc(cx - w * 0.06, 11, w * 0.05, 0, Math.PI * 2);
+            c.arc(cx + w * 0.06, 11, w * 0.05, 0, Math.PI * 2);
+            c.fill();
+            body(22, w * 0.32, h * 0.22, '#6a5a4a');
+            legs(41, '#4a3a2e');
+            arms(22, h * 0.2, '#5a4a3a');
+            break;
+        }
+        case 'tanaka': {
+            head(14);
+            body(24, w * 0.36, h * 0.28, '#7a7a72');
+            c.fillStyle = 'rgba(140,130,120,0.3)';
+            c.fillRect(cx - w * 0.22, 24, w * 0.44, h * 0.28);
+            legs(50, '#3a3632');
+            arms(24, h * 0.28, '#7a7a72');
+            c.fillStyle = '#9a3020';
+            c.fillRect(cx - 3, 32, 6, 12);
+            c.fillRect(cx - 7, 36, 14, 4);
+            break;
+        }
+    }
+}
+
+function buildCharGrid() {
+    const grid = document.getElementById('charGrid');
+    for (const ch of characters) {
+        const card = document.createElement('div');
+        card.className = 'char-card' + (ch.id === selectedCharacter ? ' selected' : '');
+        card.dataset.charId = ch.id;
+
+        const port = document.createElement('canvas');
+        port.className = 'char-portrait';
+        port.width = 70;
+        port.height = 90;
+        drawPortrait(port, ch.id);
+
+        const name = document.createElement('div');
+        name.className = 'char-name';
+        name.textContent = ch.name;
+
+        const desc = document.createElement('div');
+        desc.className = 'char-desc';
+        desc.textContent = ch.desc;
+
+        card.appendChild(port);
+        card.appendChild(name);
+        card.appendChild(desc);
+
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedCharacter = ch.id;
+        });
+
+        grid.appendChild(card);
+    }
+}
+buildCharGrid();
+
+// ── navigation ──
+function showCustomization() {
+    if (!audioCtx) initAudio();
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    document.getElementById('homeScreen').classList.add('hidden');
+    document.getElementById('customizationScreen').classList.remove('hidden');
+}
+
+function showHome() {
+    document.getElementById('customizationScreen').classList.add('hidden');
+    document.getElementById('blackScreen').classList.add('hidden');
+    document.getElementById('homeScreen').classList.remove('hidden');
+}
+
 function showBlack() {
     if (!audioCtx) initAudio();
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();

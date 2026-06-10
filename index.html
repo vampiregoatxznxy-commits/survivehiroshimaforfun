@@ -17,9 +17,15 @@
 <div id="homeScreen" class="screen">
     <h1>Survive Hiroshima Bombing Simulator</h1>
     <div class="buttons">
-        <button class="btn" onclick="showBlack()">customization</button>
+        <button class="btn" onclick="showCustomization()">customization</button>
         <button class="btn" onclick="showBlack()">play</button>
     </div>
+</div>
+
+<div id="customizationScreen" class="screen hidden">
+    <h2>Choose Your Character</h2>
+    <div id="charGrid"></div>
+    <button class="btn back-btn" onclick="showHome()">back</button>
 </div>
 
 <div id="blackScreen" class="screen hidden">

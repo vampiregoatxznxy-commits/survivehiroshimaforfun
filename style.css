@@ -121,6 +121,77 @@ body {
     transform: scale(0.98);
 }
 
+#customizationScreen {
+    background: transparent;
+}
+
+#customizationScreen h2 {
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    color: #c8c0b8;
+    letter-spacing: 0.12em;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.9);
+    animation: fadeIn 1s ease forwards;
+}
+
+#charGrid {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 800px;
+    animation: fadeIn 1.5s ease forwards;
+}
+
+.char-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(15, 12, 10, 0.55);
+    border: 1px solid rgba(140, 120, 100, 0.2);
+    padding: 1.2rem 1rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 130px;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.char-card:hover {
+    background: rgba(50, 35, 25, 0.5);
+    border-color: rgba(180, 155, 130, 0.4);
+}
+
+.char-card.selected {
+    background: rgba(60, 40, 30, 0.5);
+    border-color: rgba(200, 170, 140, 0.6);
+}
+
+.char-portrait {
+    width: 70px;
+    height: 90px;
+    margin-bottom: 0.6rem;
+}
+
+.char-name {
+    color: #c8b8a8;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.2rem;
+}
+
+.char-desc {
+    color: rgba(180, 165, 150, 0.5);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+}
+
+.back-btn {
+    margin-top: 2rem;
+    animation: fadeIn 2s ease forwards;
+}
+
 #blackScreen {
     background: #000;
     cursor: pointer;
