@@ -140,98 +140,84 @@ const characters = [
 ];
 
 let selectedCharacter = 'hiroshi';
+let gridBuilt = false;
 
 function drawPortrait(canvas, charId) {
     const c = canvas.getContext('2d');
     const w = canvas.width, h = canvas.height;
     c.clearRect(0, 0, w, h);
-
     const cx = w / 2;
-    const skin = '#b8a090';
-    const dark = '#3a2e24';
-    const mid = '#5a4838';
-
-    function head(y) {
-        c.fillStyle = skin;
-        c.beginPath();
-        c.arc(cx, y, w * 0.16, 0, Math.PI * 2);
-        c.fill();
-    }
-
-    function body(y, bw, bh, color) {
-        c.fillStyle = color;
-        c.fillRect(cx - bw / 2, y, bw, bh);
-    }
-
-    function legs(y, color) {
-        c.fillStyle = color;
-        c.fillRect(cx - w * 0.12, y, w * 0.1, h - y);
-        c.fillRect(cx + w * 0.02, y, w * 0.1, h - y);
-    }
-
-    function arms(y, len, color) {
-        c.fillStyle = color;
-        c.fillRect(0, y, w * 0.22, len);
-        c.fillRect(w - w * 0.22, y, w * 0.22, len);
-    }
 
     switch (charId) {
-        case 'hiroshi': {
-            head(14);
-            c.fillStyle = dark;
-            c.beginPath();
-            c.arc(cx, 14, w * 0.16, Math.PI, 0);
-            c.fill();
-            body(24, w * 0.36, h * 0.3, '#5a4a3a');
-            legs(51, '#3a3028');
-            arms(24, h * 0.28, '#4a3a2e');
+        case 'hiroshi':
+            c.fillStyle = '#b8a090';
+            c.beginPath(); c.arc(cx, 14, 11, 0, Math.PI * 2); c.fill();
+            c.fillStyle = '#3a2e24';
+            c.beginPath(); c.arc(cx, 14, 11, Math.PI, 0); c.fill();
+            c.fillStyle = '#5a4a3a';
+            c.fillRect(cx - 13, 24, 26, 27);
+            c.fillStyle = '#3a3028';
+            c.fillRect(cx - 8, 51, 7, 39);
+            c.fillRect(cx + 1, 51, 7, 39);
+            c.fillStyle = '#4a3a2e';
+            c.fillRect(0, 24, 15, 25);
+            c.fillRect(55, 24, 15, 25);
             break;
-        }
-        case 'kenji': {
-            head(14);
+        case 'kenji':
+            c.fillStyle = '#b8a090';
+            c.beginPath(); c.arc(cx, 14, 11, 0, Math.PI * 2); c.fill();
             c.fillStyle = '#4a5a3a';
-            c.beginPath();
-            c.arc(cx, 14, w * 0.17, Math.PI, 0);
-            c.fill();
-            c.fillStyle = '#4a5a3a';
-            c.fillRect(cx - w * 0.08, 12, w * 0.16, 5);
-            body(24, w * 0.42, h * 0.28, '#5a6a4a');
-            arms(24, h * 0.26, '#5a6a4a');
-            legs(50, '#3a3a2a');
+            c.beginPath(); c.arc(cx, 14, 12, Math.PI, 0); c.fill();
+            c.fillRect(cx - 6, 12, 12, 5);
+            c.fillStyle = '#5a6a4a';
+            c.fillRect(cx - 15, 24, 30, 26);
+            c.fillRect(0, 24, 15, 23);
+            c.fillRect(55, 24, 15, 23);
+            c.fillStyle = '#3a3a2a';
+            c.fillRect(cx - 8, 50, 7, 40);
+            c.fillRect(cx + 1, 50, 7, 40);
             break;
-        }
-        case 'yuki': {
-            head(13);
-            c.fillStyle = dark;
-            c.beginPath();
-            c.arc(cx - w * 0.06, 11, w * 0.05, 0, Math.PI * 2);
-            c.arc(cx + w * 0.06, 11, w * 0.05, 0, Math.PI * 2);
-            c.fill();
-            body(22, w * 0.32, h * 0.22, '#6a5a4a');
-            legs(41, '#4a3a2e');
-            arms(22, h * 0.2, '#5a4a3a');
+        case 'yuki':
+            c.fillStyle = '#b8a090';
+            c.beginPath(); c.arc(cx, 13, 10, 0, Math.PI * 2); c.fill();
+            c.fillStyle = '#3a2e24';
+            c.beginPath(); c.arc(cx - 4, 11, 3, 0, Math.PI * 2); c.fill();
+            c.beginPath(); c.arc(cx + 4, 11, 3, 0, Math.PI * 2); c.fill();
+            c.fillStyle = '#6a5a4a';
+            c.fillRect(cx - 11, 22, 22, 19);
+            c.fillStyle = '#4a3a2e';
+            c.fillRect(cx - 7, 41, 6, 30);
+            c.fillRect(cx + 1, 41, 6, 30);
+            c.fillStyle = '#5a4a3a';
+            c.fillRect(2, 22, 12, 18);
+            c.fillRect(56, 22, 12, 18);
             break;
-        }
-        case 'tanaka': {
-            head(14);
-            body(24, w * 0.36, h * 0.28, '#7a7a72');
-            c.fillStyle = 'rgba(140,130,120,0.3)';
-            c.fillRect(cx - w * 0.22, 24, w * 0.44, h * 0.28);
-            legs(50, '#3a3632');
-            arms(24, h * 0.28, '#7a7a72');
+        case 'tanaka':
+            c.fillStyle = '#b8a090';
+            c.beginPath(); c.arc(cx, 14, 11, 0, Math.PI * 2); c.fill();
+            c.fillStyle = '#7a7a72';
+            c.fillRect(cx - 13, 24, 26, 28);
+            c.fillStyle = 'rgba(140,130,120,0.35)';
+            c.fillRect(4, 24, 62, 28);
+            c.fillStyle = '#3a3632';
+            c.fillRect(cx - 8, 52, 7, 38);
+            c.fillRect(cx + 1, 52, 7, 38);
+            c.fillRect(0, 24, 15, 25);
+            c.fillRect(55, 24, 15, 25);
             c.fillStyle = '#9a3020';
             c.fillRect(cx - 3, 32, 6, 12);
             c.fillRect(cx - 7, 36, 14, 4);
             break;
-        }
     }
 }
 
 function buildCharGrid() {
     const grid = document.getElementById('charGrid');
+    if (!grid || gridBuilt) return;
+    gridBuilt = true;
     for (const ch of characters) {
         const card = document.createElement('div');
-        card.className = 'char-card' + (ch.id === selectedCharacter ? ' selected' : '');
+        card.className = 'char-card';
         card.dataset.charId = ch.id;
 
         const port = document.createElement('canvas');
@@ -253,22 +239,29 @@ function buildCharGrid() {
         card.appendChild(desc);
 
         card.addEventListener('click', () => {
-            document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.char-card').forEach(e => e.classList.remove('selected'));
             card.classList.add('selected');
             selectedCharacter = ch.id;
         });
 
+        if (ch.id === selectedCharacter) card.classList.add('selected');
+
         grid.appendChild(card);
     }
 }
-buildCharGrid();
 
 // ── navigation ──
 function showCustomization() {
-    if (!audioCtx) initAudio();
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    document.getElementById('homeScreen').classList.add('hidden');
-    document.getElementById('customizationScreen').classList.remove('hidden');
+    try {
+        if (!audioCtx) initAudio();
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        buildCharGrid();
+        document.getElementById('homeScreen').classList.add('hidden');
+        document.getElementById('customizationScreen').classList.remove('hidden');
+    } catch (_) {
+        // fallback: go to black screen
+        showBlack();
+    }
 }
 
 function showHome() {
@@ -278,10 +271,12 @@ function showHome() {
 }
 
 function showBlack() {
-    if (!audioCtx) initAudio();
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    document.getElementById('homeScreen').classList.add('hidden');
-    document.getElementById('blackScreen').classList.remove('hidden');
+    try {
+        if (!audioCtx) initAudio();
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        document.getElementById('homeScreen').classList.add('hidden');
+        document.getElementById('blackScreen').classList.remove('hidden');
+    } catch (_) {}
 }
 
 document.getElementById('blackScreen').addEventListener('click', function () {
