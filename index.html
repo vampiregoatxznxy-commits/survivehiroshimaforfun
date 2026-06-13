@@ -3,34 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Survive Hiroshima Bombing Simulator</title>
+<title>Survive Hiroshima - August 6, 1945</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
 </head>
 <body>
 
 <div id="bgContainer">
-    <video id="bgVideo" muted loop playsinline preload="auto"></video>
-    <canvas id="bgCanvas"></canvas>
-    <div id="overlay"></div>
+  <video id="bgVideo" muted loop playsinline preload="auto"></video>
+  <canvas id="bgCanvas"></canvas>
+  <div id="overlay"></div>
 </div>
 
 <div id="homeScreen" class="screen">
-    <h1>Survive Hiroshima Bombing Simulator</h1>
-    <div class="buttons">
-        <button class="btn" onclick="showCustomization()">customization</button>
-        <button class="btn" onclick="showBlack()">play</button>
-    </div>
+  <h1>Survive Hiroshima<br>August 6, 1945</h1>
+  <p class="subtitle">Can you survive the atomic bombing and its aftermath?</p>
+  <div class="buttons">
+    <button class="btn" id="customizeBtn">choose role</button>
+    <button class="btn btn-play" id="playBtn">play</button>
+  </div>
 </div>
 
 <div id="customizationScreen" class="screen hidden">
-    <button class="btn btn-top-left" onclick="showHome()">back</button>
-    <h2>Choose Your Character</h2>
-    <div id="charGrid"></div>
-    <button class="btn btn-select" onclick="showHome()">select</button>
+  <button class="btn btn-top-left" id="backBtn">back</button>
+  <h2>Choose Your Role</h2>
+  <p class="role-hint">Your starting location and survival chances depend on your role</p>
+  <div id="charGrid"></div>
+  <button class="btn btn-select" id="selectBtn">select &amp; play</button>
 </div>
 
-<div id="blackScreen" class="screen hidden">
-    <p class="back-hint">click anywhere to return</p>
+<div id="gameOverlay" class="hidden">
+  <div id="crosshair">+</div>
+  <div id="hud">
+    <div id="hudLeft">
+      <div class="hud-stat"><span class="hud-label">HEALTH</span><span id="healthBar"><span id="healthFill"></span></span><span id="healthText">100</span></div>
+      <div class="hud-stat"><span class="hud-label">RADIATION</span><span id="radBar"><span id="radFill"></span></span><span id="radText">0</span></div>
+      <div class="hud-stat"><span class="hud-label">HYDRATION</span><span id="thirstBar"><span id="thirstFill"></span></span><span id="thirstText">100</span></div>
+      <div class="hud-stat"><span class="hud-label">STAMINA</span><span id="staminaBar"><span id="staminaFill"></span></span></div>
+    </div>
+    <div id="hudRight">
+      <div id="hudTime">7:00 AM</div>
+      <div id="hudDay">Day 1</div>
+      <div id="hudLoc"></div>
+      <div id="hudEffects"></div>
+    </div>
+  </div>
+  <div id="flashOverlay" class="hidden"></div>
+  <div id="deathScreen" class="hidden">
+    <div id="deathContent">
+      <h1 id="deathTitle">YOU DIED</h1>
+      <p id="deathCause"></p>
+      <p id="deathDesc" class="death-desc"></p>
+      <button class="btn" id="deathRetryBtn">try again</button>
+    </div>
+  </div>
+  <div id="winScreen" class="hidden">
+    <div id="winContent">
+      <h1>SURVIVED</h1>
+      <p class="win-subtitle">You endured the first 48 hours after the bombing</p>
+      <div id="lastingEffects">
+        <h3>Lasting Effects</h3>
+        <ul id="effectsList"></ul>
+      </div>
+      <p class="win-history">On August 6, 1945, the world changed forever.<br>Of Hiroshima's population of ~350,000, an estimated 140,000 died by the end of 1945.<br>Many survivors faced radiation sickness, burns, and loss for decades after.</p>
+      <button class="btn" id="winRetryBtn">play again</button>
+    </div>
+  </div>
+  <div id="notification"></div>
 </div>
 
 <script src="script.js"></script>
